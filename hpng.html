@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>HPNG</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #f0f8ff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      background-color: #64b5f6;
+      width: 100%;
+      padding: 30px 0;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      color: #fff;
+      font-size: 2.5em;
+      text-transform: uppercase;
+    }
+
+    main {
+      max-width: 500px;
+      width: 100%;
+      background-color: #fff;
+      margin-top: 40px;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 20px;
+      display: block;
+    }
+
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1em;
+    }
+
+    input:invalid, select:invalid {
+      border-color: red;
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 12px 20px;
+      font-size: 1em;
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1976d2;
+    }
+
+    #conteudo {
+      display: none;
+    }
+
+    #info-ano {
+      margin-top: 10px;
+      background-color: #e3f2fd;
+      padding: 10px;
+      border-radius: 8px;
+      font-style: italic;
+    }
+
+    #preco-total {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 1.2em;
+      color: #1a237e;
+    }
+
+    .campo {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>HPNG</h1>
+  </header>
+
+  <main>
+    <div class="campo">
+      <label for="codigo">Digite seu código de acesso:</label>
+      <input type="text" id="codigo" placeholder="Ex: 123">
+    </div>
+    <button onclick="verificarCodigo()">Entrar</button>
+
+    <div id="conteudo">
+      <form id="formulario">
+        <input type="hidden" name="produto" value="HPNG">
+        <input type="hidden" name="codigo_cliente" id="codigo_cliente">
+	<input type="hidden" name="id_pedido" id="id_pedido">
+
+
+        <div class="campo">
+          <label for="endereco">Endereço de entrega:</label>
+          <input type="text" id="endereco" name="endereco" required>
+        </div>
+
+        <div class="campo">
+          <label for="marca">Escolha a marca do carro:</label>
+          <select id="marca" name="marca" required>
+            <option value="">Selecione uma marca</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="modelo">Escolha o modelo do carro:</label>
+          <select id="modelo" name="modelo" required>
+            <option value="">Selecione um modelo</option>
+          </select>
+        </div>
+
+        <div id="info-ano"></div>
+
+        <div class="campo">
+          <label for="nivel_balistico">Qual o nível balístico desejado?</label>
+          <select id="nivel_balistico" name="nivel_balistico" required>
+            <option value="">Selecione o nível</option>
+            <option value="Nível 3A">Nível 3A</option>
+            <option value="Nível 3">Nível 3</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="Cor">Qual a cor desejada?</label>
+          <select id="Cor" name="Cor" required>
+            <option value="">Selecione a cor</option>
+            <option value="Incolor">Incolor</option>
+            <option value="Fumê">Fumê</option>
+            <option value="Verde">Verde</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="Tipo">Você deseja comprar um Vidro específico ou um kit completo?</label>
+          <select id="Tipo" name="Tipo" required>
+            <option value="">Selecione o tipo de compra</option>
+            <option value="Kit completo">Kit completo</option>
+            <option value="Peça(s)">Peça(s)</option>
+          </select>
+        </div>
+
+        <fieldset class="campo" id="campo-pecas" style="display: none;">
+          <legend>Peça(s)</legend>
+          <p>Selecione as peças que você quer adquirir!</p>
+          <label><input type="checkbox" name="pecas" value="Parabrisa"> Parabrisa</label>
+          <label><input type="checkbox" name="pecas" value="Fixo dianteiro direito"> Fixo dianteiro direito</label>
+          <label><input type="checkbox" name="pecas" value="Fixo dianteiro esquerdo"> Fixo dianteiro esquerdo</label>
+          <label><input type="checkbox" name="pecas" value="Porta dianteira direita"> Porta dianteira direita</label>
+          <label><input type="checkbox" name="pecas" value="Porta dianteira esquerda"> Porta dianteira esquerda</label>
+          <label><input type="checkbox" name="pecas" value="Porta traseira direita"> Porta traseira direita</label>
+          <label><input type="checkbox" name="pecas" value="Porta traseira esquerda"> Porta traseira esquerda</label>
+          <label><input type="checkbox" name="pecas" value="Teto solar"> Teto solar</label>
+          <label><input type="checkbox" name="pecas" value="Quarter dianteiro direito"> Quarter dianteiro direito</label>
+          <label><input type="checkbox" name="pecas" value="Quarter dianteiro esquerdo"> Quarter dianteiro esquerdo</label>
+          <label><input type="checkbox" name="pecas" value="Quarter traseiro direito"> Quarter traseiro direito</label>
+          <label><input type="checkbox" name="pecas" value="Quarter traseiro esquerdo"> Quarter traseiro esquerdo</label>
+          <label><input type="checkbox" name="pecas" value="Vigia"> Vigia</label>
+        </fieldset>
+
+        <div class="campo" id="campo-aco" style="display: none;">
+          <label>Você deseja colocar aço em quais dessas peças?</label>
+          <div id="opcoes-aco">
+            <label><input type="checkbox" name="aco" value="Parabrisa"> Parabrisa</label>
+            <label><input type="checkbox" name="aco" value="Vigia"> Vigia</label>
+            <label><input type="checkbox" name="aco" value="Fixo dianteiro"> Fixo dianteiro</label>
+          </div>
+        </div>
+
+        <div id="preco-total"></div>
+
+        <div id="pergunta-foto" class="campo" style="display: none;">
+          <label>Deseja enviar fotos das peças agora ou depois?</label>
+          <label><input type="radio" name="envio_foto" value="agora"> Enviar agora</label>
+          <label><input type="radio" name="envio_foto" value="depois"> Enviar depois</label>
+        </div>
+
+        <div id="upload-fotos" class="campo" style="display: none;">
+          <label>Envie as fotos das peças selecionadas:</label>
+          <div id="campos-upload"></div>
+        </div>
+
+    
+	<div class="campo" id="campo-regime" style="display: none;">
+  <label for="regime_pagamento">Qual regime de pagamento deseja utilizar?</label>
+  <select id="regime_pagamento" name="regime_pagamento" required>
+    <option value="">Selecione o regime</option>
+  </select>
+
+<div class="campo" id="campo-sugestao" style="display: none;">
+  <label for="sugestao">Digite sua sugestão:</label>
+  <textarea id="sugestao" name="sugestao" rows="4" placeholder="Escreva sua sugestão aqui..."></textarea>
+
+</div>
+
+<button type="submit">Enviar</button>
+
+</div>
+
+	
+      </form>
+    </div>
+  </main>
+
+  <script>
+    // Seu JavaScript permanece o mesmo, com o bloco atualizado da perguntaFoto inserido corretamente
+    // por questão de espaço e organização, posso te entregar esse trecho também caso deseje
+
+    // AVISO: aqui está o HTML, se você quiser o <script> inteiro com as melhorias, posso postar em seguida
+  </script>
+
+<script>
+  let dadosPreco = {};
+
+  function verificarCodigo() {
+  const codigosValidos = [
+    "48367", "34786", "99596", "33457", "57459", "51554", "49386", "19366", "41442",
+    "56792", "75192", "31312", "43322", "88676", "51495", "73535", "47455", "32514",
+    "54128", "36453", "16825"
+  ];
+
+  const entrada = document.getElementById("codigo").value.trim();
+  const conteudo = document.getElementById("conteudo");
+
+  if (codigosValidos.includes(entrada)) {
+    document.getElementById("codigo_cliente").value = entrada;
+    const idPedido = `${entrada}_${Date.now()}`;
+    document.getElementById("id_pedido").value = idPedido;
+
+    conteudo.style.display = "block";
+    document.querySelectorAll("#formulario input, #formulario select, #formulario button").forEach(el => el.disabled = false);
+
+    carregarRegimesPagamento(entrada);
+  } else {
+    conteudo.style.display = "none";
+    alert("Código incorreto. Tente novamente.");
+  }
+}
+
+  const apiModelosURL = "https://script.google.com/macros/s/AKfycbx37Rz68GNt4I1ZdrmRKyyZcgcG_I-rBntXQVKcYwHw6UTRHQtUHWKbJ6b4kJcy2UAE/exec";
+  const apiPrecoURL = "https://script.google.com/macros/s/AKfycbytzbrlyIeydXhK159ccskNbQHWzrhI_M8cvQKbwMONUlqf2-g1P8GrwbCiQvAc_BUw/exec";
+
+  async function carregarMarcas() {
+    try {
+      const response = await fetch(apiModelosURL);
+      const dados = await response.json();
+
+      const selectMarca = document.getElementById("marca");
+      const selectModelo = document.getElementById("modelo");
+      const infoAno = document.getElementById("info-ano");
+      const precoDiv = document.getElementById("preco-total");
+
+      Object.keys(dados).forEach(marca => {
+        const option = document.createElement("option");
+        option.value = marca;
+        option.textContent = marca;
+        selectMarca.appendChild(option);
+      });
+
+      selectMarca.addEventListener("change", () => {
+        const modelos = dados[selectMarca.value] || [];
+        selectModelo.innerHTML = '<option value="">Selecione um modelo</option>';
+        infoAno.textContent = "";
+        precoDiv.textContent = "";
+
+        modelos.forEach(modeloObj => {
+          const option = document.createElement("option");
+          option.value = modeloObj.nome;
+          option.textContent = modeloObj.nome;
+          option.dataset.ano = modeloObj.ano;
+          selectModelo.appendChild(option);
+        });
+      });
+
+      selectModelo.addEventListener("change", async () => {
+        const selectedOption = selectModelo.selectedOptions[0];
+        const ano = selectedOption ? selectedOption.dataset.ano : "";
+        infoAno.textContent = ano ? `Compatível com: ${ano}` : "";
+
+        const cliente = document.getElementById("codigo_cliente").value;
+        const modeloSelecionado = selectModelo.value;
+        precoDiv.textContent = "";
+
+        if (!modeloSelecionado) return;
+
+        try {
+          const url = `${apiPrecoURL}?cliente=${encodeURIComponent(cliente)}&modelo=${encodeURIComponent(modeloSelecionado)}`;
+          const res = await fetch(url);
+          const data = await res.json();
+
+          if (data.erro) {
+            precoDiv.textContent = "Erro ao obter preço: " + data.erro;
+            return;
+          }
+
+          dadosPreco = data;
+          atualizarPrecoTotal();
+        } catch (erro) {
+          precoDiv.textContent = "Erro ao consultar a precificação.";
+        }
+      });
+    } catch (erro) {
+      alert("Erro ao carregar dados das marcas: " + erro);
+    }
+  }
+
+  function atualizarPrecoTotal() {
+    const tipo = document.getElementById("Tipo").value;
+    const precoDiv = document.getElementById("preco-total");
+    let total = 0;
+
+    if (tipo === "Kit completo") {
+      total += parseFloat(dadosPreco["Preço KIT"] || 0);
+      document.querySelectorAll("#campo-aco input[type='checkbox']:checked").forEach(el => {
+        const chaveAco = `Aço no ${el.value}`;
+        let valorAco = parseFloat(dadosPreco[chaveAco] || 0);
+        if (el.value === "Fixo dianteiro") valorAco *= 2;
+        total += valorAco;
+      });
+    } else if (tipo === "Peça(s)") {
+      document.querySelectorAll('#campo-pecas input[type="checkbox"]:checked').forEach(el => {
+        total += parseFloat(dadosPreco[el.value] || 0);
+      });
+
+      document.querySelectorAll("#campo-aco input[type='checkbox']:checked").forEach(el => {
+        const chaveAco = `Aço no ${el.value}`;
+        let quantidade = 1;
+        if (el.value === "Fixo dianteiro") {
+          const fixosSelecionados = [
+            "Fixo dianteiro direito",
+            "Fixo dianteiro esquerdo"
+          ].filter(val => document.querySelector(`#campo-pecas input[value="${val}"]`)?.checked);
+          quantidade = fixosSelecionados.length;
+        }
+        const valorAco = parseFloat(dadosPreco[chaveAco] || 0) * quantidade;
+        total += valorAco;
+      });
+    }
+
+    precoDiv.textContent = `Preço total do pedido: R$ ${total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
+  }
+
+  document.getElementById("Tipo").addEventListener("change", () => {
+    const tipo = document.getElementById("Tipo").value;
+    const campoPecas = document.getElementById("campo-pecas");
+    const campoAco = document.getElementById("campo-aco");
+    const opcoesAco = document.getElementById("opcoes-aco");
+
+    if (tipo === "Peça(s)") {
+      campoPecas.style.display = "block";
+      campoAco.style.display = "none";
+    } else if (tipo === "Kit completo") {
+      campoPecas.style.display = "none";
+      campoAco.style.display = "block";
+      [...opcoesAco.children].forEach(el => el.style.display = "block");
+    } else {
+      campoPecas.style.display = "none";
+      campoAco.style.display = "none";
+    }
+
+    atualizarPerguntaFoto();
+    atualizarPrecoTotal();
+  });
+
+  
+  window.addEventListener("DOMContentLoaded", () => {
+  carregarMarcas();
+  
+  document.querySelectorAll("#formulario input, #formulario select, #formulario button").forEach(el => {
+    el.disabled = true;
+  });
+
+  document.querySelectorAll('input[name="aco"]').forEach(checkbox => {
+    checkbox.addEventListener("change", atualizarPrecoTotal);
+  });
+});
+
+  const perguntaFoto = document.getElementById("pergunta-foto");
+  const uploadFotos = document.getElementById("upload-fotos");
+  const camposUpload = document.getElementById("campos-upload");
+
+  function atualizarPerguntaFoto() {
+    const tipo = document.getElementById("Tipo").value;
+    const pecasSelecionadas = Array.from(document.querySelectorAll('#campo-pecas input[type="checkbox"]:checked')).map(el => el.value);
+    const mostrarPergunta = tipo === "Kit completo" || pecasSelecionadas.includes("Parabrisa") || pecasSelecionadas.includes("Teto solar");
+    perguntaFoto.style.display = mostrarPergunta ? "block" : "none";
+    if (!mostrarPergunta) {
+      uploadFotos.style.display = "none";
+      document.querySelectorAll('input[name="envio_foto"]').forEach(rb => rb.checked = false);
+    }
+  }
+
+  document.querySelectorAll('#campo-pecas input[type="checkbox"]').forEach(checkbox => {
+    checkbox.addEventListener("change", function () {
+      const campoAco = document.getElementById("campo-aco");
+      const opcoesAco = document.getElementById("opcoes-aco");
+
+      const selecionadas = Array.from(document.querySelectorAll('#campo-pecas input[type="checkbox"]:checked')).map(el => el.value);
+      const exibirAco = [];
+
+      if (selecionadas.includes("Parabrisa")) exibirAco.push("Parabrisa");
+      if (selecionadas.includes("Vigia")) exibirAco.push("Vigia");
+      if (
+        selecionadas.includes("Fixo dianteiro direito") ||
+        selecionadas.includes("Fixo dianteiro esquerdo")
+      ) exibirAco.push("Fixo dianteiro");
+
+      if (exibirAco.length > 0) {
+        campoAco.style.display = "block";
+        [...opcoesAco.children].forEach(el => {
+          const val = el.querySelector("input").value;
+          el.style.display = exibirAco.includes(val) ? "block" : "none";
+        });
+      } else {
+        campoAco.style.display = "none";
+      }
+
+      atualizarPerguntaFoto();
+      atualizarPrecoTotal();
+    });
+  });
+
+  document.querySelectorAll('input[name="envio_foto"]').forEach(rb => {
+    rb.addEventListener("change", function () {
+      if (this.value === "agora") {
+        const tipo = document.getElementById("Tipo").value;
+        const pecasParaFotos = [];
+
+        if (tipo === "Kit completo") {
+          pecasParaFotos.push("Parabrisa", "Teto solar");
+        } else {
+          const selecionadas = Array.from(document.querySelectorAll('#campo-pecas input[type="checkbox"]:checked')).map(el => el.value);
+          if (selecionadas.includes("Parabrisa")) pecasParaFotos.push("Parabrisa");
+          if (selecionadas.includes("Teto solar")) pecasParaFotos.push("Teto solar");
+        }
+
+        const idPedido = document.getElementById("id_pedido").value;
+
+camposUpload.innerHTML = "";
+pecasParaFotos.forEach(peca => {
+  const nomeBase = peca === "Parabrisa" ? `Para_${idPedido}` :
+                   peca === "Teto solar" ? `Teto_${idPedido}` :
+                   `${peca}_${idPedido}`;
+
+  const div = document.createElement("div");
+  div.innerHTML = `
+    <label>${peca}: 
+      <input 
+        type="file" 
+        name="fotos_${peca.replace(/\s+/g, '_').toLowerCase()}" 
+        data-nome-arquivo="${nomeBase}" 
+        accept="image/*" required>
+    </label>`;
+  camposUpload.appendChild(div);
+});
+
+        uploadFotos.style.display = pecasParaFotos.length > 0 ? "block" : "none";
+      } else {
+        uploadFotos.style.display = "none";
+        camposUpload.innerHTML = "";
+      }
+    });
+  });
+
+async function carregarRegimesPagamento(cliente) {
+  const campo = document.getElementById("campo-regime");
+  const select = document.getElementById("regime_pagamento");
+
+  select.innerHTML = '<option value="">Carregando...</option>';
+  campo.style.display = "block";
+
+  try {
+    const response = await fetch(`https://script.google.com/macros/s/AKfycbyKishW-R4-r2CjVL7fDeLaz_bWyW6BSmySYG6ZtsLH40aeWIfBbe-VI3FPRUFFCyZS/exec?cliente=${cliente}`);
+    const regimes = await response.json();
+
+    if (!regimes.length) {
+      select.innerHTML = '<option value="">Nenhum regime disponível</option>';
+      return;
+    }
+
+    select.innerHTML = '<option value="">Selecione o regime</option>';
+    regimes.forEach(regime => {
+      const option = document.createElement("option");
+      option.value = regime;
+      option.textContent = regime;
+      select.appendChild(option);
+    });
+
+  } catch (erro) {
+    select.innerHTML = '<option value="">Erro ao carregar</option>';
+    alert("Erro ao buscar regimes de pagamento.");
+  }
+}
+
+document.getElementById("regime_pagamento").addEventListener("change", function () {
+  const campoSugestao = document.getElementById("campo-sugestao");
+  const textarea = document.getElementById("sugestao");
+
+  // Verifica se a opção contém "sugestão" (com acento), independentemente das maiúsculas/minúsculas
+  if (this.value.toLowerCase().includes("sugestão")) {
+    campoSugestao.style.display = "block";
+    textarea.required = true;
+  } else {
+    campoSugestao.style.display = "none";
+    textarea.required = false;
+    textarea.value = "";
+  }
+});
+
+
+document.getElementById("formulario").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const dados = new FormData(form);
+
+  // Converte checkboxes múltiplos em strings
+  const pecasSelecionadas = Array.from(document.querySelectorAll('input[name="pecas"]:checked')).map(el => el.value).join(", ");
+  const acoSelecionado = Array.from(document.querySelectorAll('input[name="aco"]:checked')).map(el => el.value).join(", ");
+
+  dados.set("pecas", pecasSelecionadas);
+  dados.set("aco", acoSelecionado);
+
+  try {
+    await fetch("https://script.google.com/macros/s/AKfycbzBaqW09d9fsnITsswow6t0LYdC5ali4ms_UJV7easuQiMvMvLbKqzuKtdMmMcFivfe/exec", {
+      method: "POST",
+      body: dados
+    });
+
+    alert("Dados enviados com sucesso!");
+    form.reset();
+    document.getElementById("conteudo").style.display = "none";
+  } catch (erro) {
+    alert("Erro ao enviar os dados: " + erro.message);
+  }
+});
+
+
+</script>
+
+</body>
+</html>
