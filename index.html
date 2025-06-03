@@ -536,21 +536,49 @@ document.getElementById("formulario").addEventListener("submit", async function(
   e.preventDefault();
 
   const form = e.target;
-  const formData = new FormData(form);
-
-  // Para múltiplas checkboxes (pecas e aco), juntar os valores marcados em string única
-  const pecas = Array.from(document.querySelectorAll('input[name="pecas"]:checked')).map(cb => cb.value).join(", ");
-  const aco = Array.from(document.querySelectorAll('input[name="aco"]:checked')).map(cb => cb.value).join(", ");
+  const dados = {};
   
-  formData.set("pecas", pecas);
-  formData.set("aco", aco);
+  form.querySelectorAll("input, select, textarea").forEach(el => {
+    if (el.type === "checkbox") {
+      if (!dados[el.name]) dados[el.name] = [];
+      if (el.checked) dados[el.name].push(el.value);
+    } else if (el.type === "radio") {
+      if (el.checked) dados[el.name] = el.value;
+    } else {
+      dados[el.name] = el.value;
+    }
+  });
 
-  // URL do seu Web App publicado do Google Apps Script
+  // Converte checkboxes em texto
+  dados.pecas = (dados.pecas || []).join(", ");
+  dados.aco = (dados.aco || []).join(", ");
+
+  // Anexa imagens convertidas em base64
+  dados.imagens = [];
+  const arquivos = document.querySelectorAll('#upload-fotos input[type="file"]');
+  for (const input of arquivos) {
+    const file = input.files[0];
+    if (file) {
+      const nome = input.name;
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      dados.imagens.push({ nome, base64 });
+    }
+  }
+
   const scriptURL = "https://script.google.com/macros/s/AKfycbzBaqW09d9fsnITsswow6t0LYdC5ali4ms_UJV7easuQiMvMvLbKqzuKtdMmMcFivfe/exec";
+
   try {
     const response = await fetch(scriptURL, {
       method: "POST",
-      body: formData,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(dados)
     });
 
     if (response.ok) {
@@ -569,7 +597,7 @@ document.getElementById("formulario").addEventListener("submit", async function(
   }
 });
 
-
+    
 
 </script>
 
