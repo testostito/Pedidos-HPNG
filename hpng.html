@@ -109,7 +109,7 @@
     <button onclick="verificarCodigo()">Entrar</button>
 
     <div id="conteudo">
-      <form id="formulario">
+      <form id="formulario" enctype="multipart/form-data">
         <input type="hidden" name="produto" value="HPNG">
         <input type="hidden" name="codigo_cliente" id="codigo_cliente">
 	<input type="hidden" name="id_pedido" id="id_pedido">
@@ -532,35 +532,77 @@ document.getElementById("regime_pagamento").addEventListener("change", function 
 });
 
 
-document.getElementById("formulario").addEventListener("submit", async function(e) {
+  document.getElementById("formulario").addEventListener("submit", async function (e) {
   e.preventDefault();
 
   const form = e.target;
   const dados = new FormData(form);
 
-  // Converte checkboxes múltiplos em strings
-  const pecasSelecionadas = Array.from(document.querySelectorAll('input[name="pecas"]:checked')).map(el => el.value).join(", ");
-  const acoSelecionado = Array.from(document.querySelectorAll('input[name="aco"]:checked')).map(el => el.value).join(", ");
-
-  dados.set("pecas", pecasSelecionadas);
-  dados.set("aco", acoSelecionado);
-
   try {
-    await fetch("https://script.google.com/macros/s/AKfycbzBaqW09d9fsnITsswow6t0LYdC5ali4ms_UJV7easuQiMvMvLbKqzuKtdMmMcFivfe/exec", {
+    // 1. Envia os dados principais
+    const resposta = await fetch("https://script.google.com/macros/s/AKfycbwF4DPhMbUhkl1uimiMeAW4kkAfTjZ87QuGjASHx2PrI7eWipzsbypEYxMpccRmVoeG/exec", {
       method: "POST",
       body: dados
     });
 
-    alert("Dados enviados com sucesso!");
-    form.reset();
-    document.getElementById("conteudo").style.display = "none";
+    const texto = await resposta.text();
+
+    // 2. Envia as fotos separadamente
+    await enviarFotosSeparadas();
+
+    // 3. Mensagem de sucesso
+    const mensagensAntigas = document.querySelectorAll(".mensagem-envio");
+    mensagensAntigas.forEach(msg => msg.remove());
+
+    const msg = document.createElement("p");
+    msg.textContent = "✅ Pedido e fotos enviados com sucesso!";
+    msg.className = "mensagem-envio";
+    msg.style.color = "green";
+    msg.style.marginTop = "15px";
+
+    form.appendChild(msg);
+
+    setTimeout(() => {
+      msg.remove();
+      form.reset();
+      document.getElementById("conteudo").style.display = "none";
+    }, 5000);
+
   } catch (erro) {
-    alert("Erro ao enviar os dados: " + erro.message);
+    alert("Erro ao enviar os dados ou fotos. Tente novamente.");
   }
 });
 
 
+async function enviarFotosSeparadas() {
+  const campos = document.querySelectorAll('#campos-upload input[type="file"]');
+  if (campos.length === 0) return;
+
+  const formDataFotos = new FormData();
+
+  campos.forEach(input => {
+    if (input.files.length > 0) {
+      const arquivo = input.files[0];
+      const nomeBase = input.dataset.nomeArquivo || arquivo.name;
+      formDataFotos.append(nomeBase, arquivo);
+    }
+  });
+
+  try {
+    await fetch("https://script.google.com/macros/s/AKfycbwM4zroU_xAYoIsxANhF0h4QbFDf3ColFBHgaYsNyBpprFp-DPaf-C1PMICRi_En6tk9A/exec", { // <-- Substitua esta linha
+      method: "POST",
+      body: formDataFotos
+    });
+  } catch (erro) {
+    console.error("Erro ao enviar fotos:", erro);
+  }
+}
+
+
+
 </script>
+
+
 
 </body>
 </html>
