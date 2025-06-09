@@ -114,11 +114,13 @@
         <input type="hidden" name="codigo_cliente" id="codigo_cliente">
 	<input type="hidden" name="id_pedido" id="id_pedido">
 
+	<div class="campo">
+  <label for="solicitante">Nome do solicitante do pedido:</label>
+  <input type="text" id="solicitante" name="solicitante" required placeholder="Ex: João da Silva">
 
-        <div class="campo">
-          <label for="endereco">Endereço de entrega:</label>
-          <input type="text" id="endereco" name="endereco" required>
-        </div>
+</div>
+
+   
 
         <div class="campo">
           <label for="marca">Escolha a marca do carro:</label>
@@ -134,6 +136,13 @@
           </select>
         </div>
 
+	<div class="campo">
+ 	 <label for="ano_carro">Qual o ano do carro?</label>
+  	<input type="text" id="ano_carro" name="ano_carro" required placeholder="Ex: 2020">
+	</div>
+
+
+
         <div id="info-ano"></div>
 
         <div class="campo">
@@ -147,7 +156,7 @@
 
         <div class="campo">
           <label for="Cor">Qual a cor desejada?</label>
-          <select id="Cor" name="Cor" required>
+          <select id="Cor" name="cor" required>
             <option value="">Selecione a cor</option>
             <option value="Incolor">Incolor</option>
             <option value="Fumê">Fumê</option>
@@ -157,7 +166,7 @@
 
         <div class="campo">
           <label for="Tipo">Você deseja comprar um Vidro específico ou um kit completo?</label>
-          <select id="Tipo" name="Tipo" required>
+          <select id="Tipo" name="tipo" required>
             <option value="">Selecione o tipo de compra</option>
             <option value="Kit completo">Kit completo</option>
             <option value="Peça(s)">Peça(s)</option>
@@ -192,6 +201,9 @@
         </div>
 
         <div id="preco-total"></div>
+	
+	<input type="hidden" id="valor_total_pedido" name="valor_total_pedido">
+
 
         <div id="pergunta-foto" class="campo" style="display: none;">
           <label>Deseja enviar fotos das peças agora ou depois?</label>
@@ -216,6 +228,35 @@
   <textarea id="sugestao" name="sugestao" rows="4" placeholder="Escreva sua sugestão aqui..."></textarea>
 
 </div>
+
+<div class="campo" id="campo-forma-pagamento">
+  <label for="forma_pagamento">Qual a forma de pagamento desejada?</label>
+  <select id="forma_pagamento" name="forma_pagamento" required>
+    <option value="">Selecione a forma de pagamento</option>
+    <option value="Boleto bancário">Boleto bancário</option>
+    <option value="Transferência bancária">Transferência bancária (PIX/TED/DOC)</option>
+  </select>
+</div>
+
+ <div class="campo">
+  <label>O endereço de entrega é o mesmo do cliente?</label>
+  <label><input type="radio" name="endereco_igual" value="sim" required> Sim</label>
+  <label><input type="radio" name="endereco_igual" value="nao" required> Não</label>
+</div>
+
+<div id="dados-entrega" style="display: none;">
+  <div class="campo">
+    <label for="empresa_recebedora">Nome da empresa que vai receber:</label>
+    <input type="text" id="empresa_recebedora" name="empresa_recebedora">
+  </div>
+
+  <div class="campo">
+    <label for="endereco">Endereço de entrega:</label>
+    <input type="text" id="endereco" name="endereco_2">
+  </div>
+
+
+<div class="campo">
 
 <button type="submit">Enviar</button>
 
@@ -362,6 +403,8 @@
     }
 
     precoDiv.textContent = `Preço total do pedido: R$ ${total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
+document.getElementById("valor_total_pedido").value = total.toFixed(2);
+
   }
 
   document.getElementById("Tipo").addEventListener("change", () => {
@@ -540,7 +583,7 @@ document.getElementById("regime_pagamento").addEventListener("change", function 
 
   try {
     // 1. Envia os dados principais
-    const resposta = await fetch("https://script.google.com/macros/s/AKfycbwF4DPhMbUhkl1uimiMeAW4kkAfTjZ87QuGjASHx2PrI7eWipzsbypEYxMpccRmVoeG/exec", {
+    const resposta = await fetch("https://script.google.com/macros/s/AKfycbxp8OtoCW0wJDsDxThl65CoxUie0LCQfnwW64KoVTUfgDFGpi7NB8FXYjlSfE6YUOEv/exec", {
       method: "POST",
       body: dados
     });
@@ -589,8 +632,8 @@ async function enviarFotosSeparadas() {
   });
 
   try {
-    await fetch("https://script.google.com/macros/s/AKfycbwM4zroU_xAYoIsxANhF0h4QbFDf3ColFBHgaYsNyBpprFp-DPaf-C1PMICRi_En6tk9A/exec", { // <-- Substitua esta linha
-      method: "POST",
+    await fetch("https://script.google.com/macros/s/AKfycbwggRxGyGXXp1bbQS_wcGaj5SBQ2E0ZW8Qktqc1odq1JqnEz48BE6xwPDjVu7vh7xSRbQ/exec", {       
+	method: "POST",
       body: formDataFotos
     });
   } catch (erro) {
@@ -598,6 +641,23 @@ async function enviarFotosSeparadas() {
   }
 }
 
+document.querySelectorAll('input[name="endereco_igual"]').forEach(rb => {
+  rb.addEventListener("change", function () {
+    const exibirCampos = this.value === "nao";
+    const dadosEntrega = document.getElementById("dados-entrega");
+    const inputEmpresa = document.getElementById("empresa_recebedora");
+    const inputEndereco = document.getElementById("endereco");
+
+    dadosEntrega.style.display = exibirCampos ? "block" : "none";
+    inputEmpresa.required = exibirCampos;
+    inputEndereco.required = exibirCampos;
+
+    if (!exibirCampos) {
+      inputEmpresa.value = "";
+      inputEndereco.value = "";
+    }
+  });
+});
 
 
 </script>
